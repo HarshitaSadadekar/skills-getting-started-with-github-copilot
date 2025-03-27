@@ -46,5 +46,55 @@
     </footer>
 
     <script src="app.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const activitiesList = document.getElementById("activities-list");
+        const activitySelect = document.getElementById("activity");
+
+        fetch("/activities")
+          .then((response) => response.json())
+          .then((activities) => {
+            activitiesList.innerHTML = "";
+            activitySelect.innerHTML = '<option value="">-- Select an activity --</option>';
+
+            for (const [name, details] of Object.entries(activities)) {
+              // Create activity card
+              const card = document.createElement("div");
+              card.className = "activity-card";
+
+              const title = document.createElement("h4");
+              title.textContent = name;
+
+              const description = document.createElement("p");
+              description.textContent = details.description;
+
+              const schedule = document.createElement("p");
+              schedule.textContent = `Schedule: ${details.schedule}`;
+
+              const participants = document.createElement("div");
+              participants.className = "participants";
+              participants.innerHTML = `
+                <h5>Participants:</h5>
+                <ul>
+                  ${details.participants.map((p) => `<li>${p}</li>`).join("")}
+                </ul>
+              `;
+
+              card.appendChild(title);
+              card.appendChild(description);
+              card.appendChild(schedule);
+              card.appendChild(participants);
+
+              activitiesList.appendChild(card);
+
+              // Add to dropdown
+              const option = document.createElement("option");
+              option.value = name;
+              option.textContent = name;
+              activitySelect.appendChild(option);
+            }
+          });
+      });
+    </script>
   </body>
 </html>
